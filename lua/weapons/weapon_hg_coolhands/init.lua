@@ -310,7 +310,7 @@ function SWEP:ApplyForce()
 				local trace = util.TraceLine(tr)
 
 				if bone != "ValveBiped.Bip01_Spine2" or not trace.Hit then
-					phys:ApplyForceCenter(ply:GetAimVector() * math.min(5000, phys:GetMass() * 800))
+					phys:ApplyForceCenter(ply:GetAimVector() * math.min(60000, phys:GetMass() * 800))
 					self:SetCarrying()
 				end
 

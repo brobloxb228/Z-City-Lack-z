@@ -291,7 +291,7 @@ function SWEP:IsZoom()
 		(self:GetButtstockAttack() - CurTime() < -1) and 
 		(self:GetOwner():IsPlayer() and self:KeyDown(IN_ATTACK2) and not self:KeyDown(IN_SPEED)) and
 		!(self:IsSprinting() and !IsValid(owner.FakeRagdoll)) and
-		((IsValid(owner.FakeRagdoll) and (self:KeyDown(IN_USE) or hg.RagdollCombatInUse(owner))) or
+		((IsValid(owner.FakeRagdoll) and self:KeyDown(IN_USE)) or
 		(owner:IsOnGround() or owner:InVehicle())) and 
 		not owner.suiciding and !(owner.organism and (owner.organism.larm and !self:IsPistolHoldType())
 		and owner.organism.rarm and (owner.organism.larm > 0.99 or owner.organism.rarm > 0.99))
@@ -319,10 +319,8 @@ end
 function SWEP:IsLocal2()
 	return CLIENT and self:GetOwner() == LocalPlayer() and LocalPlayer() == GetViewEntity()
 end
-
 local hg_quietshots = GetConVar("hg_quietshots") or CreateClientConVar("hg_quietshots", "0", true, false, "quieter gun sounds", 0, 1)
 local hg_gunshotvolume = GetConVar("hg_gunshotvolume") or CreateClientConVar("hg_gunshotvolume", "1", true, false, "volume of gun sounds", 0, 1)
-local hg_oldsights = CreateConVar("hg_oldsights", "0", {FCVAR_ARCHIVE, FCVAR_NOTIFY, FCVAR_REPLICATED}, "No camera wobble when aiming")
 
 if CLIENT then
 	EmitSound = hg.EmitSound
@@ -624,7 +622,7 @@ function SWEP:EmitShoot()
 			dir:Mul(10000)
 			local inside = util.QuickTrace(ply:EyePos(), dir, {ply, self, hg.GetCurrentCharacter(ply)})
 
-			--debugoverlay.Line(ply:EyePos(), ply:EyePos() + dir, 1, color_white, true)
+			debugoverlay.Line(ply:EyePos(), ply:EyePos() + dir, 1, color_white, true)
 			insideVal = insideVal + (inside.Hit and !inside.HitSky and 1 or 0)
 		end
 	end
@@ -1073,13 +1071,13 @@ local bashvpang = Angle(-10, 0, 0)
 function SWEP:CoreStep()
 	local owner = self:GetOwner()
 	local actwep = owner.GetActiveWeapon and owner:GetActiveWeapon() or nil
-	
+
 	if CLIENT and IsValid(self:GetWeaponEntity()) then self:GetWeaponEntity():SetLOD(0); end
 
 	if self:GetClass() == "weapon_taser" then
 		self:WorldModel_Transform()
 	end
-	
+
 	if SERVER and (not IsValid(owner) or (IsValid(actwep) and self != actwep)) then
 		self:SetNWBool("IsResting", false)
 
@@ -1386,15 +1384,7 @@ hg.postureFunctions2 = {
 		self.AdditionalAngPreLerp[3] = self.AdditionalAngPreLerp[3] - 4
 	end,
 	[2] = function(self,ply)
-		local add = (hg.GunPositions[ply] and hg.GunPositions[ply][2]) or 0
-		self.AdditionalPosPreLerp[3] = self.AdditionalPosPreLerp[3] - 6 - add
-		if self:IsPistolHoldType() then return end
-		self.AdditionalPosPreLerp[1] = self.AdditionalPosPreLerp[1] + 2
-		self.AdditionalPosPreLerp[2] = self.AdditionalPosPreLerp[2] + 1
-
-		self.AdditionalAngPreLerp[1] = self.AdditionalAngPreLerp[1] - 2
-		--self.AdditionalAngPreLerp[1] = self.AdditionalAngPreLerp[1] - 4
-		--self.AdditionalAngPreLerp[2] = self.AdditionalAngPreLerp[2] + 7
+		self.AdditionalPosPreLerp[3] = self.AdditionalPosPreLerp[3] - 4
 	end,
 	[3] = function(self,ply,force)
 		if self:IsZoom() and not force then return end
@@ -1429,31 +1419,13 @@ hg.postureFunctions2 = {
 	end,
 	[6] = function(self,ply)
 		if self:IsZoom() then return end
-		local add = (hg.GunPositions[ply] and hg.GunPositions[ply][2]) or 0
 		if self:IsPistolHoldType() then 
 			self.AdditionalPosPreLerp[2] = self.AdditionalPosPreLerp[2] - 2
-			self.AdditionalPosPreLerp[3] = self.AdditionalPosPreLerp[3] + 6 - add
+			self.AdditionalPosPreLerp[3] = self.AdditionalPosPreLerp[3] + 6
 		else
 			self.AdditionalPosPreLerp[1] = self.AdditionalPosPreLerp[1] - 2
 			self.AdditionalPosPreLerp[2] = self.AdditionalPosPreLerp[2] + -2
-			self.AdditionalPosPreLerp[3] = self.AdditionalPosPreLerp[3] + 6 - add
-		end
-	end,
-	[9] = function(self,ply)
-		if self:IsZoom() and not force then return end
-		local add = (hg.GunPositions[ply] and hg.GunPositions[ply][3]) or 0
-		self.AdditionalPosPreLerp[3] = self.AdditionalPosPreLerp[3] + 3
-		if self:IsPistolHoldType() then
-			self.AdditionalPosPreLerp[2] = self.AdditionalPosPreLerp[2] + 14 - add
-			self.AdditionalPosPreLerp[1] = self.AdditionalPosPreLerp[1] - 4
-			self.AdditionalAngPreLerp[3] = self.AdditionalAngPreLerp[3] - 30
-		else
-			self.AdditionalPosPreLerp[2] = self.AdditionalPosPreLerp[2] + 14 - add
-			self.AdditionalPosPreLerp[1] = self.AdditionalPosPreLerp[1] + 3
-
-			self.AdditionalAngPreLerp[3] = self.AdditionalAngPreLerp[3] - 10
-			self.AdditionalAngPreLerp[1] = self.AdditionalAngPreLerp[1] + 2
-			self.AdditionalAngPreLerp[2] = self.AdditionalAngPreLerp[2] - 10
+			self.AdditionalPosPreLerp[3] = self.AdditionalPosPreLerp[3] + 5
 		end
 	end,
 }
@@ -1868,7 +1840,7 @@ function SWEP:InUse()
 		return false
 	end
 
-	return ( ((not ply.InVehicle || !ply:InVehicle()) and !hg.RagdollCombatInUse(ply)) && self:KeyDown(IN_USE)) || ((ply.InVehicle && ply:InVehicle() or hg.RagdollCombatInUse(ply) or ent == ply) && not self:KeyDown(IN_USE)) || (self.reload and self.reload > 0) || (IsValid(ply.OldRagdoll))
+	return ( (not ply.InVehicle || !ply:InVehicle()) && self:KeyDown(IN_USE)) || (ply.InVehicle && ply:InVehicle() && not self:KeyDown(IN_USE)) || (self.reload and self.reload > 0) || (IsValid(ply.OldRagdoll))
 end
 
 local veczero = Vector(0, 0, 0)
@@ -2255,7 +2227,7 @@ function SWEP:CanRest()
     tr.endpos = pos + vec * -30
     tr.filter = {self, self:GetOwner(), hg.GetCurrentCharacter(self:GetOwner())}
 
-    --debugoverlay.Line(tr.start, tr.endpos, 1, color_white)
+    debugoverlay.Line(tr.start, tr.endpos, 1, color_white)
 
     local trace = util.TraceLine(tr)
 	--print(pos + vec * 10)

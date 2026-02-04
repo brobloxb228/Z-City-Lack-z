@@ -22,7 +22,7 @@ function hg.DermaPlayerQuery( fSelected, strName, strDesc )
         query.Selected = value
     end
 
-    for _, v in player.Iterator() do
+    for _, v in ipairs( player.GetAll() ) do
         comboBox:AddChoice( v:Name(), v )
     end
 

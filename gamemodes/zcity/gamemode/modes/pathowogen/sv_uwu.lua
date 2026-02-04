@@ -309,10 +309,8 @@ function MODE:RoundStart()
 	self.saved.PlayerCount = 0
 	self.saved.Players = {}
 
-	local players = player.GetAll()
-
-	self.saved.furamount = math.max(math.Round(#players / 4), 1)
-	for i, ply in RandomPairs(players) do
+	self.saved.furamount = math.max(math.Round(#player.GetAll() / 4), 1)
+	for i, ply in RandomPairs(player.GetAll()) do
 		if self.saved.furs[ply] or ply:Team() == TEAM_SPECTATOR then continue end
 
 		self.saved.furs[ply] = true
@@ -322,8 +320,8 @@ function MODE:RoundStart()
 		end
 	end
 
-	self.traitoramount = ((#players >= 10) and 1) or 0
-	for i, ply in RandomPairs(players) do
+	self.traitoramount = ((#player.GetAll() >= 10) and 1) or 0
+	for i, ply in RandomPairs(player.GetAll()) do
 		if ply:Team() == TEAM_SPECTATOR then continue end
 
 		if table.Count(self.saved.traitors) >= self.traitoramount then

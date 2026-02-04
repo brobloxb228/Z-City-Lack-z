@@ -35,7 +35,7 @@ local sideMul = 5
 local eyeAngL = Angle(0, 0, 0)
 local IsValid = IsValid
 
-local hg_fov = ConVarExists("hg_fov") and GetConVar("hg_fov") or CreateClientConVar("hg_fov", "70", true, false, "changes fov to value", 75, 100)
+local hg_fov = ConVarExists("hg_fov") and GetConVar("hg_fov") or CreateClientConVar("hg_fov", "70", true, false, "changes fov to value", 75, 130)
 local hg_realismcam = ConVarExists("hg_realismcam") and GetConVar("hg_realismcam") or CreateClientConVar("hg_realismcam", "0", true, false, "realism camera", 0, 1)
 local hg_gopro = ConVarExists("hg_gopro") and GetConVar("hg_gopro") or CreateClientConVar("hg_gopro", "0", true, false, "gopro camera", 0, 1)
 
@@ -476,7 +476,7 @@ CalcView = function(ply, origin, angles, fov, znear, zfar)
 
 	view.znear = 1 -- 3
 	view.zfar = zfar
-	view.fov = math.Clamp(hg_fov:GetFloat(),75,100) + fova[1] + lerpfovadd + lerpfovadd2
+	view.fov = math.Clamp(hg_fov:GetFloat(),75,130) + fova[1] + lerpfovadd + lerpfovadd2
 	view.drawviewer = true--not hullcheck.Hit
 	view.origin = origin
 	view.angles = angles
@@ -635,7 +635,7 @@ local renderView = {
 	drawviewmodel = true,
 	dopostprocess = true,
 	drawmonitors = true,
-	fov = 100
+	fov = 130
 }
 local fliprt = GetRenderTarget( "fb_flipped", ScrW(), ScrH(), false )
 local fliprtmat = CreateMaterial(

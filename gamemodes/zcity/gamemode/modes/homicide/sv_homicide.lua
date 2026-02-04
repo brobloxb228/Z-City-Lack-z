@@ -649,7 +649,7 @@ function MODE:Intermission()
 	self.Type = CROUND
 	local player_count = 0
 
-	for k, ply in player.Iterator() do
+	for k, ply in ipairs(player.GetAll()) do
 		if ply:Team() == TEAM_SPECTATOR then continue end
 		ply:KillSilent()
 
@@ -684,7 +684,7 @@ function MODE:Intermission()
 	local traitors = {}
 
 	-- local players = {}
-	-- for i, ply in player.Iterator() do
+	-- for i, ply in ipairs(player.GetAll()) do
 	-- 	if ply.isTraitor or ply:Team() == TEAM_SPECTATOR then continue end
 
 	-- 	players[#players + 1] = {ply, ply.Karma}
@@ -744,7 +744,7 @@ function MODE:Intermission()
 	self.PoliceSpawned = false
 	self.PoliceAllowed = self.Types[self.Type].PoliceAllowed
 
-	for k, ply in player.Iterator() do
+	for k, ply in ipairs(player.GetAll()) do
 		if(MODE.ShouldStartRoleRound())then
 			net.Start("HMCD_RoundStart")	--; TODO Structure description
 				net.WriteBool(ply.isTraitor)	--; Is Traitor
@@ -874,7 +874,7 @@ function MODE:CheckAlivePlayers()
 		[1] = {}
 	}
 	
-	for _, ply in player.Iterator() do
+	for _, ply in ipairs(player.GetAll()) do
 		if(not ply:Alive())then
 			continue
 		end
@@ -900,7 +900,7 @@ local swatDeployed = false
 function MODE:GetActivePlayers()
 	local valid = {}
 
-	for _, ply in player.Iterator() do
+	for _, ply in ipairs(player.GetAll()) do
 		if ply:Alive() then continue end                        
 		if ply:Team() == TEAM_SPECTATOR then continue end       
 		if ply.afkTime2 and ply.afkTime2 > 60 then continue end 
@@ -1144,7 +1144,7 @@ function MODE:SendTraitorDeathState(traitor, is_alive)
     
 
     local recipients = {}
-    for _, ply in player.Iterator() do
+    for _, ply in ipairs(player.GetAll()) do
         if ply.isTraitor and ply.MainTraitor then
             table.insert(recipients, ply)
         end
@@ -1184,7 +1184,7 @@ net.Receive("HMCD_RequestTraitorStatuses", function(len, ply)
     if not ply.isTraitor or not ply.MainTraitor then return end
     
 
-    for _, other_ply in player.Iterator() do
+    for _, other_ply in ipairs(player.GetAll()) do
         if other_ply.isTraitor and other_ply.CurAppearance then
             local is_alive = other_ply:Alive() and (not other_ply.organism or not other_ply.organism.incapacitated)
             
@@ -1278,7 +1278,7 @@ function MODE:EndRound()
 		-- ply.SubRole = nil
 	-- end
 
-	for i, ply in player.Iterator() do
+	for i, ply in ipairs(player.GetAll()) do
 		if ply.isTraitor and ply:Team() ~= TEAM_SPECTATOR then
 			traitors[#traitors + 1] = ply
 		end
@@ -1517,7 +1517,7 @@ function MODE.SpawnPlayers(spawn_with_subroles)
     end
 
     local player_count = 0
-    for i, ply in player.Iterator() do
+    for i, ply in ipairs(player.GetAll()) do
         if(ply:Team() != TEAM_SPECTATOR)then
             player_count = player_count + 1
         end
@@ -1571,7 +1571,7 @@ function MODE.SpawnPlayers(spawn_with_subroles)
 
 
     local all_players = player.GetAll()
-    for idx, current_ply in player.Iterator() do
+    for idx, current_ply in pairs(all_players) do
         if(current_ply:Team() != TEAM_SPECTATOR)then
             current_ply.SubRole = nil
 
@@ -1609,6 +1609,11 @@ function MODE.SpawnPlayers(spawn_with_subroles)
                         if(!role_info or !MODE.RoleChooseRoundTypes[MODE.Type].Traitor[sub_role])then
                             sub_role = MODE.RoleChooseRoundTypes[MODE.Type].TraitorDefaultRole or "traitor_default"
                             role_info = MODE.SubRoles[sub_role]
+                        end
+
+                        if(sub_role == "traitor_brute" and math.random() > 0.1) then
+                             sub_role = MODE.RoleChooseRoundTypes[MODE.Type].TraitorDefaultRole or "traitor_default"
+                             role_info = MODE.SubRoles[sub_role]
                         end
 
                         if(current_ply.MainTraitor)then
@@ -1666,7 +1671,7 @@ function MODE.SpawnPlayers(spawn_with_subroles)
                 local traitor_assistants = {}
                 
                 if (this_player.isTraitor) then
-                    for _, other_ply in player.Iterator() do
+                    for _, other_ply in ipairs(player.GetAll()) do
                         if (other_ply.isTraitor) then
                             traitor_amt = traitor_amt + 1
                             
@@ -1744,11 +1749,11 @@ hook.Add("PlayerSpawn", "HMCD_UpdateTraitorsList", function(ply)
 	if not ply.isTraitor then return end
 	
 	timer.Simple(0.5, function()
-		for _, main_traitor in player.Iterator() do
+		for _, main_traitor in ipairs(player.GetAll()) do
 			if IsValid(main_traitor) and main_traitor.isTraitor and main_traitor.MainTraitor then
 				local traitor_assistants = {}
 				
-				for _, other_ply in player.Iterator() do
+				for _, other_ply in ipairs(player.GetAll()) do
 					if other_ply.isTraitor then
 						local Appearance = other_ply.CurAppearance
 						if Appearance then
@@ -1789,11 +1794,11 @@ hook.Add("PlayerDeath", "HMCD_UpdateTraitorsList", function(ply)
 		end
 		
 		timer.Simple(0.4, function()
-			for _, main_traitor in player.Iterator() do
+			for _, main_traitor in ipairs(player.GetAll()) do
 				if IsValid(main_traitor) and main_traitor.isTraitor and main_traitor.MainTraitor then
 					local traitor_assistants = {}
 					
-					for _, other_ply in player.Iterator() do
+					for _, other_ply in ipairs(player.GetAll()) do
 						if other_ply.isTraitor then
 							local Appearance = other_ply.CurAppearance
 							if Appearance then

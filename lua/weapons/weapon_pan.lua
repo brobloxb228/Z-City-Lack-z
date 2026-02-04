@@ -13,7 +13,7 @@ SWEP.ViewModel = ""
 
 SWEP.NoHolster = true
 
-SWEP.BreakBoneMul = 0.35
+SWEP.BreakBoneMul = 0.5
 
 SWEP.HoldType = "melee"
 SWEP.TwoHanded = false

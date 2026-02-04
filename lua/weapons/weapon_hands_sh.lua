@@ -508,7 +508,7 @@ end
 
 function SWEP:IsLocal()
 	if SERVER then return end
-	return not game.SinglePlayer() and self:GetOwner() == LocalPlayer()
+	return self:GetOwner() == LocalPlayer()
 end
 
 if SERVER then
@@ -763,8 +763,13 @@ function SWEP:SecondaryAttack()
 				self:GetOwner():SetVelocity(self:GetOwner():GetAimVector() * 20)
 				tr.Entity:SetVelocity((self:GetOwner():KeyDown(IN_SPEED) and 1 or -1) * self:GetOwner():GetAimVector() * 50)
 				self:SetNextSecondaryFire(CurTime() + .25)
-				if self:GetOwner().organism.superfighter or self:GetOwner().PlayerClassName == "sc_infiltrator" or (self:GetOwner().PlayerClassName == "furry" and !(tr.Entity.PlayerClassName == "furry" or (tr.Entity.IsBerserk and tr.Entity:IsBerserk()))) or self:GetOwner():IsBerserk() then
-					hg.LightStunPlayer(tr.Entity, 3)
+				if self:GetOwner().organism.superfighter or self:GetOwner().PlayerClassName == "sc_infiltrator" or (self:GetOwner().PlayerClassName == "furry" and !(tr.Entity.PlayerClassName == "furry" or (tr.Entity.IsBerserk and tr.Entity:IsBerserk()))) or self:GetOwner():IsBerserk() or self:GetOwner().SubRole == "traitor_brute" then
+					if self:GetOwner().SubRole == "traitor_brute" then
+						hg.Fake(tr.Entity)
+					else
+						hg.LightStunPlayer(tr.Entity, 3)
+					end
+					
 					timer.Simple(0,function()
 						local rag = hg.GetCurrentCharacter(tr.Entity)
 						if IsValid(rag) and rag ~= tr.Entity then
@@ -844,8 +849,18 @@ function SWEP:ApplyForce()
 
 		local avec = vec * len * 8 - phys:GetVelocity()
 
+		if ply.SubRole == "traitor_brute" then
+			mul = mul * 5
+		end
+
 		local Force = avec * mul
-		local ForceMagnitude = math.min(Force:Length(), 3000) * (1 / math.max(phys:GetVelocity():Dot(vec) / 25, 1))
+		local limit = 3000
+		
+		if ply.SubRole == "traitor_brute" then
+			limit = 30000
+		end
+
+		local ForceMagnitude = math.min(Force:Length(), limit) * (1 / math.max(phys:GetVelocity():Dot(vec) / 25, 1))
 
 		Force = Force:GetNormalized() * ForceMagnitude
 
@@ -1349,7 +1364,7 @@ function SWEP:PrimaryAttack(forcespecial)
 		special_attack = false
 	end
 
-	if self.IsLocal and self:IsLocal() then
+	if CLIENT and self.IsLocal and self:IsLocal() then
 		ViewPunch(special_attack and Angle(0, 0, 0) or Angle((-1), -(rand and 2 or -2), (rand and 6 or -6)))
 		//ViewPunch2(special_attack and Angle(5, -2, 2) or Angle((-1), -(rand and 2 or -2), (rand and 6 or -6)))
 		if special_attack then
@@ -1359,7 +1374,7 @@ function SWEP:PrimaryAttack(forcespecial)
 		end
 	end
 
-	if self.IsLocal and not self:IsLocal() then
+	if CLIENT and self.IsLocal and not self:IsLocal() then
 		owner:AddVCDSequenceToGestureSlot(GESTURE_SLOT_ATTACK_AND_RELOAD,owner:LookupSequence((special_attack or rand) and "range_fists_r" or "range_fists_l"),0,true)
 	end
 

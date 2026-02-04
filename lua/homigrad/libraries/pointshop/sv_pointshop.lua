@@ -273,7 +273,7 @@ net.Receive("hg_pointshop_net",function( _, ply )
     funcstring( PLUGIN, ply, unpack(vars) )
 end)
 
-hook.Add("HG_PlayerSay","OpenPointShop",function(ply, txtTbl, txt)
+hook.Add("PlayerSay","OpenPointShop",function(ply,txt)
     if txt == "!pointshop" then
         ply:ConCommand("hg_pointshop")
     end

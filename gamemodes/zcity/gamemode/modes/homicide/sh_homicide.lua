@@ -313,6 +313,7 @@ MODE.RoleChooseRoundTypes = {
 			["traitor_infiltrator"] = true,
 			["traitor_chemist"] = true,
 			["traitor_assasin"] = true,
+			["traitor_brute"] = true,
 			--; ОБЪЕДЕНИТЬ ХИМИКА И ДИВЕРСАНТА!!! наверное
 			-- ["traitor_demoman"] = true,
 		},

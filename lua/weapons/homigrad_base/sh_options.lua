@@ -11,15 +11,16 @@ if CLIENT then
 	end)
 
 	concommand.Add("hg_change_ammotype", function(ply, cmd, args)
-	    local wep = ply:GetActiveWeapon()
-	    local type_ = math.Round(args[1])
-	    if wep and ishgweapon(wep) and (wep:Clip1() == 0 or wep.AllwaysChangeAmmo) and wep:CanUse() and wep.AmmoTypes and wep.AmmoTypes[type_] then
-	        ply:ChatPrint("Changed ammotype to: " .. wep.AmmoTypes[type_][1])
-	        net.Start("changeAmmoType")
-	        net.WriteEntity(wep)
-	        net.WriteInt(type_, 4)
-	        net.SendToServer()
-	    end
+		local wep = ply:GetActiveWeapon()
+		local type_ = math.Round(args[1])
+		if wep and ishgweapon(wep) and wep:Clip1() == 0 or wep.AllwaysChangeAmmo and wep:CanUse() and wep.AmmoTypes and wep.AmmoTypes[type_] then
+			--wep:ApplyAmmoChanges(type_)
+			ply:ChatPrint("Changed ammotype to: " .. wep.AmmoTypes[type_][1])
+			net.Start("changeAmmoType")
+			net.WriteEntity(wep)
+			net.WriteInt(type_, 4)
+			net.SendToServer()
+		end
 	end)
 
 	net.Receive("unload_ammo",function()
@@ -51,15 +52,9 @@ else
 	end)
 
 	net.Receive("changeAmmoType", function(len, ply)
-	    local wep = net.ReadEntity()
-	    local type_ = net.ReadInt(4)
-	    if not IsValid(wep) then return end
-	    if wep:GetOwner() ~= ply then return end
-	    if not ishgweapon(wep) then return end
-	    if not wep:CanUse() then return end
-	    if not wep.AmmoTypes or not wep.AmmoTypes[type_] then return end
-	    if not wep.AllwaysChangeAmmo and wep:Clip1() ~= 0 then return end
-	    wep:ApplyAmmoChanges(type_)
+		local wep = net.ReadEntity()
+		local type_ = net.ReadInt(4)
+		if wep and ishgweapon(wep) and wep:Clip1() == 0 or wep.AllwaysChangeAmmo and wep:CanUse() and wep.AmmoTypes and wep.AmmoTypes[type_] then wep:ApplyAmmoChanges(type_) end
 	end)
 end
 
@@ -76,7 +71,6 @@ if CLIENT then
         [6] = "Shooting from cover",
         [7] = "Gangsta",
         [8] = "One-handed",
-		[9] = "Somalian",
     }
 
 	concommand.Add("hg_change_posture", function(ply, cmd, args)
@@ -88,9 +82,8 @@ if CLIENT then
 4 - low ready
 5 - point shooting
 6 - shooting from cover
-7 - gangsta shooting
+7 - one-handed shooting (gangsta)
 8 - one-handed shooting
-9 - somalian shooting
 ]]) printed = true end
 		local pos = math.Round(args[1] or -1)
 		net.Start("change_posture")
@@ -112,17 +105,12 @@ else
 		if (ply.change_posture_cooldown or 0) > CurTime() then return end
 		ply.change_posture_cooldown = CurTime() + 0.1
 
-		local gun = ply:GetActiveWeapon()
-		if IsValid(gun) and ishgweapon(gun) then
-			ply:EmitSound("weapons/zmirli/shared/foley_light" .. math.random(1,4) .. ".wav", 45, math.random(95,105))
-		end
-
-		if pos ~= -1 then
+		if pos ~= -1 then 
 			if pos == ply.posture then
 				ply.posture = 0
 				pos = 0
 			else
-				ply.posture = pos
+				ply.posture = pos 
 			end
 		else
 			ply.posture = ply.posture or 0

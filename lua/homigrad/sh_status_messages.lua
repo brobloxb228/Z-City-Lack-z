@@ -66,6 +66,7 @@ local random_phrase = {
 	"Breathing feels oddly satisfying right now.",
 	"What if this quiet lasts forever?",
 	"Why isn't anything happening?",
+	"I hate nigger's",
 }
 
 local fear_hurt_ironic = {
@@ -233,15 +234,11 @@ function string.Random(length)
 end
 
 function hg.nothing_happening(ply)
-	if not IsValid(ply) then return end
-
-	return ply.organism and ply.organism.fear < -0.6
+	return ply.organism.fear < -0.6
 end
 
 function hg.fearful(ply)
-	if not IsValid(ply) then return end
-
-	return ply.organism and ply.organism.fear > 0.5
+	return ply.organism.fear > 0.5
 end
 
 function hg.likely_to_phrase(ply)

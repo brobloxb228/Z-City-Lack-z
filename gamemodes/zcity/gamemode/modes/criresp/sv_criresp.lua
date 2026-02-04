@@ -23,7 +23,11 @@ function MODE:AssignTeams()
 	local numPlayers = #players
 	local numSWAT = 1
 
-	if numPlayers <= 4 then
+	if numPlayers == 2 then
+		numSWAT = 1
+	elseif numPlayers == 3 then
+		numSWAT = 1
+	elseif numPlayers == 4 then
 		numSWAT = 1
 	elseif numPlayers == 5 then
 		numSWAT = 2
@@ -56,7 +60,7 @@ function MODE:Intermission()
     
     self:AssignTeams()
 	
-	for k, ply in player.Iterator() do
+	for k, ply in ipairs(player.GetAll()) do
 		if ply:Team() == TEAM_SPECTATOR or ply:Team() == 0 then ply:KillSilent() continue end
 		ply:SetupTeam(ply:Team())
 	end
@@ -164,11 +168,11 @@ function MODE:GiveEquipment()
 	timer.Simple(0.5,function()
 		local swatPlayers = {} 
 
-		for i, ply in player.Iterator() do
+		for i, ply in ipairs(player.GetAll()) do
 			if ply:Team() == TEAM_SPECTATOR then continue end
 
 			if ply:Team() == 0 then
-				timer.Create("SWATSpawn" .. ply:EntIndex(), 90, 1, function()
+				timer.Create("SWATSpawn"..ply:EntIndex(), 90, 1, function()
 					if !IsValid(ply) or ply:Team() == TEAM_SPECTATOR then return end
 					ply:Spawn()
 					ply:SetSuppressPickupNotices(true)

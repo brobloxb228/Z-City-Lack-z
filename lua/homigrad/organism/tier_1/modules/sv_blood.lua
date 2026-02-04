@@ -161,6 +161,7 @@ module[2] = function(owner, org, mulTime)
 				local _, dir = LocalToWorld(vecZero, dir:Angle(), vecZero, ang)
 				dir = -dir:Forward() * len
 				hg.organism.BloodDroplet2(owner, org, wound, owner:GetVelocity() + VectorRand(-10, 10) + dir, true)
+				wound[1] = math.max(wound[1] - 0.1 * mulTime, 0)
 			end
 
 			if wound[1] == 0 then

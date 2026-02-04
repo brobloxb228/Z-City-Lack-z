@@ -15,9 +15,11 @@ local supportCooldown = 290
 local lastSupportRequest = 0
 
 local function FindAirdropPosition()
+    local players = player.GetAll()
     local validPlayers = {}
+    
 
-    for _, ply in player.Iterator() do
+    for _, ply in ipairs(players) do
         if ply:Alive() and ply:Team() != TEAM_SPECTATOR then
             table.insert(validPlayers, ply)
         end
@@ -193,7 +195,7 @@ local function CreateFallingAirdrop(items, requester)
             if IsValid(smoke) then smoke:Remove() end
             
 
-            for _, player in player.Iterator() do
+            for _, player in ipairs(player.GetAll()) do
                 if player:Alive() and player:Team() ~= TEAM_SPECTATOR then
                     if IsValid(requester) then
                         player:ChatPrint("Commander " .. requester:Nick() .. "'s supply drop has arrived!")
@@ -300,7 +302,7 @@ local function SpawnSupportTeam(requester)
         
 
         npc:AddEntityRelationship(requester, D_LI, 99)
-        for _, player in player.Iterator() do
+        for _, player in ipairs(player.GetAll()) do
             if player:IsPlayer() and player:Alive() and player:Team() != TEAM_SPECTATOR then
                 npc:AddEntityRelationship(player, D_LI, 99)
                 player:AddEntityRelationship(npc, D_LI, 99)
@@ -320,7 +322,7 @@ local function SpawnSupportTeam(requester)
         requester:ChatPrint("Support team deployed with " .. successfulSpawns .. " soldiers")
         
 
-        for _, player in player.Iterator() do
+        for _, player in ipairs(player.GetAll()) do
             if player:Alive() and player:Team() != TEAM_SPECTATOR and player != requester then
                 player:ChatPrint("Commander " .. requester:Nick() .. " has called in a support team!")
             end
@@ -343,7 +345,7 @@ local function RespawnDeadPlayers(requester)
     
 
     local deadPlayers = {}
-    for _, ply in player.Iterator() do
+    for _, ply in ipairs(player.GetAll()) do
         if not ply:Alive() and ply:Team() != TEAM_SPECTATOR then
             table.insert(deadPlayers, ply)
         end
@@ -481,18 +483,17 @@ local function RespawnDeadPlayers(requester)
     
     if respawnedCount > 0 then
 
-        for _, player in player.Iterator() do
+        for _, player in ipairs(player.GetAll()) do
             player:ChatPrint("Commander " .. requester:Nick() .. " has called in reinforcements! " .. respawnedCount .. " players respawned!")
         end
         
 
-        for _, ply in player.Iterator() do
+        for _, ply in ipairs(player.GetAll()) do
             ply:EmitSound("ambient/alarms/combine_bank_alarm_loop1.wav")
         end
         
         timer.Simple(2, function()
-            for _, ply in player.Iterator() do
-				if not IsValid(ply) then return end
+            for _, ply in ipairs(player.GetAll()) do
                 ply:StopSound("ambient/alarms/combine_bank_alarm_loop1.wav")
             end
         end)
@@ -721,7 +722,7 @@ net.Receive("defense_commander_menu", function(len, ply)
 end)
 
 hook.Add("RoundEnd", "CleanupSupportTeam", function()
-    for _, ent in ents.Iterator() do
+    for _, ent in pairs(ents.GetAll()) do
         if IsValid(ent) and ent.IsSupportTeamMember then
             SafeRemoveEntity(ent)
         end

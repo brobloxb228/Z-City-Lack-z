@@ -140,7 +140,7 @@ Hook["Player Spawn"]= function(ply)
     ply:Give("weapon_spawnmenu_pda")
 end
 
-function Hook.HG_PlayerSay(ply, txtTbl, text)
+function Hook.PlayerSay(ply, text)
     if not ply:IsAdmin() then return end
 
    --local args = string.Split(text, " ")

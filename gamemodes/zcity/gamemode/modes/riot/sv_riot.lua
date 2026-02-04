@@ -60,7 +60,7 @@ function MODE:Intermission()
 
 	local ctpos
 	local tpos
-	for i, ply in player.Iterator() do
+	for i, ply in ipairs(player.GetAll()) do
 		if ply:Team() == TEAM_SPECTATOR then continue end
 		local pos
 		if ply:Team() == 1 then
@@ -233,9 +233,10 @@ end
 
 
 function MODE:CanLaunch()
+    local players = player.GetAll()
     local activePlayers = 0
 
-    for _, ply in player.Iterator() do
+    for _, ply in ipairs(players) do
         if ply:Team() ~= TEAM_SPECTATOR then
             activePlayers = activePlayers + 1
         end
