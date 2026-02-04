@@ -294,59 +294,7 @@ hook.Add("Think", "Fake", function()
 			ang:RotateAroundAxis(ang:Up(), 30)
 		end
 
-		if ply:KeyDown(IN_ATTACK) and ply:KeyDown(IN_DUCK) and (ply.kick_next_time or 0) < CurTime() then
-			ply.kick_next_time = CurTime() + 1
-			ply.kick_end_time = CurTime() + 0.5
-		end
 
-		if (ply.kick_end_time or 0) > CurTime() then
-			local rfoot = ragdoll:GetPhysicsObjectNum(ragdoll:TranslateBoneToPhysBone(ragdoll:LookupBone("ValveBiped.Bip01_R_Foot")) or -1)
-			--local lfoot = ragdoll:GetPhysicsObjectNum(ragdoll:TranslateBoneToPhysBone(ragdoll:LookupBone("ValveBiped.Bip01_L_Foot")) or -1)
-			
-			local targetPos = ragdoll:GetPos() + angles:Forward() * 40 + Vector(0,0,10)
-
-			if IsValid(rfoot) then
-				local p = {}
-				p.secondstoarrive = 0.1
-				p.pos = targetPos
-				p.angle = rfoot:GetAngles()
-				p.maxangular = 1000
-				p.maxangulardamp = 10000
-				p.maxspeed = 500
-				p.maxspeeddamp = 1000
-				p.dampfactor = 0.8
-				p.teleportdistance = 0
-				rfoot:Wake()
-				rfoot:ComputeShadowControl(p)
-
-				local tr = util.TraceHull({
-					start = rfoot:GetPos(),
-					endpos = rfoot:GetPos() + angles:Forward() * 15,
-					filter = {ply, ragdoll},
-					mins = Vector(-10,-10,-10),
-					maxs = Vector(10,10,10)
-				})
-
-				if tr.Hit and IsValid(tr.Entity) and (ply.kick_damage_time or 0) < CurTime() then
-					ply.kick_damage_time = CurTime() + 0.5
-					local dmg = DamageInfo()
-					dmg:SetDamage(15)
-					dmg:SetAttacker(ply)
-					dmg:SetInflictor(ragdoll)
-					dmg:SetDamageType(DMG_CLUB)
-					dmg:SetDamageForce(angles:Forward() * 15000)
-					tr.Entity:TakeDamageInfo(dmg)
-					
-					if tr.Entity:IsPlayer() then
-						hg.Stun(tr.Entity, 2)
-					end
-					if IsValid(tr.Entity:GetPhysicsObject()) then
-						tr.Entity:GetPhysicsObject():ApplyForceCenter(angles:Forward() * 30000)
-					end
-					ragdoll:EmitSound("physics/body/body_medium_impact_hard"..math.random(1,6)..".wav")
-				end
-			end
-		end
 
 		if (!ply:InVehicle() && (ply:KeyDown(IN_USE) || ((ishgweapon(wep)) && ply:KeyDown(IN_ATTACK2)) || (wep.ismelee && (ply:KeyDown(IN_ATTACK2) || ply:KeyDown(IN_ATTACK))))) || (ply:InVehicle() && not ply:KeyDown(IN_USE)) then
 			if org.canmove and (not ply:KeyDown(IN_MOVELEFT) and not ply:KeyDown(IN_MOVERIGHT) or ply:InVehicle()) then
