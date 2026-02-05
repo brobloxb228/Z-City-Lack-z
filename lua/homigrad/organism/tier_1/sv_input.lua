@@ -1426,7 +1426,7 @@ local function velocityDamage(ent, data)
 			local neck_not_broken = org.spine3 < 0.8
 			
 			//if dmg > 0.5 then
-				hg.organism.input_list.spine3(org, bone, dmg * (math.random(4) == 1 and 1 or 0) * 3, dmgInfo)
+				hg.organism.input_list.spine3(org, bone, dmg * 30, dmgInfo)
 			//end
 			local hadhelmet = ent.armors and ent.armors["head"] != nil
 			if dmg * 10 > 0.5 and !hadhelmet then
