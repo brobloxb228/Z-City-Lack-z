@@ -66,7 +66,19 @@ SWEP.Identity = {
 SWEP.IsCostumeActive = false
 
 if SERVER then
+<<<<<<< HEAD
     function SWEP:OnRemove() end
+=======
+    hook.Add("HG_ReplacePhrase", "costume_pitch", function(ent, phrase, muffed, pitch)
+		if IsValid(ent) then
+			if ent:GetModel() == "models/distac/player/ghostface.mdl" then
+				return ent, phrase, muffed, true
+			elseif ent:GetModel() == "models/eu_homicide/mkx_jajon.mdl" then
+				return ent, phrase, true, pitch
+			end
+		end
+	end)
+>>>>>>> e552a484e04a3abf117d18149ec1e78c46889cee
 end
 
 function SWEP:DrawWorldModel()

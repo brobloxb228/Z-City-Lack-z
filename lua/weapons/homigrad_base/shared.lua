@@ -81,6 +81,11 @@ SWEP.AmmoTypes2 = {
 		[4] = {"23x75 Zvezda"},
 		[5] = {"23x75 Waver"}
 	},
+	["20/70 gauge"] = {
+		[1] = {"20/70 gauge"},
+		[2] = {"20/70 Slug"},
+		[3] = {"20/70 Flechette"},
+	},
 }
 
 function SWEP:OnReloaded()
@@ -1423,9 +1428,31 @@ hg.postureFunctions2 = {
 			self.AdditionalPosPreLerp[2] = self.AdditionalPosPreLerp[2] - 2
 			self.AdditionalPosPreLerp[3] = self.AdditionalPosPreLerp[3] + 6
 		else
-			self.AdditionalPosPreLerp[1] = self.AdditionalPosPreLerp[1] - 2
+			self.AdditionalPosPreLerp[1] = self.AdditionalPosPreLerp[1] - -5
 			self.AdditionalPosPreLerp[2] = self.AdditionalPosPreLerp[2] + -2
+<<<<<<< HEAD
 			self.AdditionalPosPreLerp[3] = self.AdditionalPosPreLerp[3] + 5
+=======
+			self.AdditionalPosPreLerp[3] = self.AdditionalPosPreLerp[3] + 6 - add
+			self.AdditionalAngPreLerp[1] = self.AdditionalAngPreLerp[1] + 12
+		end
+	end,
+	[9] = function(self,ply)
+		if self:IsZoom() and not force then return end
+		local add = (hg.GunPositions[ply] and hg.GunPositions[ply][3]) or 0
+		self.AdditionalPosPreLerp[3] = self.AdditionalPosPreLerp[3] + 3
+		if self:IsPistolHoldType() then
+			self.AdditionalPosPreLerp[2] = self.AdditionalPosPreLerp[2] + 14 - add
+			self.AdditionalPosPreLerp[1] = self.AdditionalPosPreLerp[1] - 4
+			self.AdditionalAngPreLerp[3] = self.AdditionalAngPreLerp[3] - 30
+		else
+			self.AdditionalPosPreLerp[2] = self.AdditionalPosPreLerp[2] + 14 - add
+			self.AdditionalPosPreLerp[1] = self.AdditionalPosPreLerp[1] + 3
+
+			self.AdditionalAngPreLerp[3] = self.AdditionalAngPreLerp[3] - 10
+			self.AdditionalAngPreLerp[1] = self.AdditionalAngPreLerp[1] + 2
+			self.AdditionalAngPreLerp[2] = self.AdditionalAngPreLerp[2] - 10
+>>>>>>> e552a484e04a3abf117d18149ec1e78c46889cee
 		end
 	end,
 }
@@ -1692,6 +1719,20 @@ function SWEP:GetAdditionalValues()
 	self.AdditionalAngPreLerp[1] = self.AdditionalAngPreLerp[1] - y * 2 * lena
 	self.AdditionalAngPreLerp[3] = self.AdditionalAngPreLerp[3] - y * 3 * lena
 
+	if CLIENT and self:IsLocal() and owner:IsOnGround() then
+		local runMul = vellen / owner:GetRunSpeed()
+		if runMul >= 0.32 then
+			if not self:IsPistolHoldType() and not self.CanEpicRun then
+				self.AdditionalPosPreLerp[3] = self.AdditionalPosPreLerp[3] - y * 3 * runMul
+				self.AdditionalAngPreLerp[1] = self.AdditionalAngPreLerp[1] - y * 3 * -2 * runMul
+				self.AdditionalAngPreLerp[3] = self.AdditionalAngPreLerp[3] - y * 3 * -6 * runMul
+			--[[else
+				self.AdditionalPosPreLerp[2] = self.AdditionalPosPreLerp[2] - y * 2 * runMul * -1
+				self.AdditionalAngPreLerp[2] = self.AdditionalAngPreLerp[2] - y * 6 * runMul]]
+			end
+		end
+	end
+
 	if CLIENT and self:IsLocal2() then
 		angle_huy[1] = x / 300
 		angle_huy[2] = y / 300
@@ -1831,6 +1872,9 @@ end
 
 function SWEP:InUse()
 	local ply = self:GetOwner()
+	
+	if !IsValid(ply) then return false end
+	
 	local ent = IsValid(ply.FakeRagdoll) and ply.FakeRagdoll or ply
 	local org = ply.organism
 

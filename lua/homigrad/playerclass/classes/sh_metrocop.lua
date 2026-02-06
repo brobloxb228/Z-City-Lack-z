@@ -216,6 +216,22 @@ function CLASS.PlayerDeath(self)
     hook.Remove( "OnEntityCreated", "relation_shipdo"..self:EntIndex())
 end
 
+<<<<<<< HEAD
+=======
+if SERVER then
+	local mtcop_phrases = {}
+	local files,_ = file.Find("sound/npc/metropolice/vo/*.wav","GAME")
+	for k,v in ipairs(files) do
+		mtcop_phrases[k] = "npc/metropolice/vo/" .. v
+	end
+
+	hook.Add("HG_ReplacePhrase", "metropolice_phrase", function(ent, phrase, muffed, pitch)
+		if IsValid(ent) and ent.PlayerClassName == "Metrocop" then
+			return ent, mtcop_phrases[math.random(#mtcop_phrases)], muffed, pitch
+		end
+	end)
+end
+>>>>>>> e552a484e04a3abf117d18149ec1e78c46889cee
 
 if CLIENT then
     local cmb_mat = Material("sprites/mat_jack_helmoverlay_r")

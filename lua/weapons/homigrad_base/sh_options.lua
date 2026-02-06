@@ -58,9 +58,23 @@ else
 	end)
 end
 
+hg.postures = {
+    [0] = "Regular hold",
+    [1] = "Hipfire",
+    [2] = "Left shoulder",
+    [3] = "High ready",
+    [4] = "Low ready",
+    [5] = "Point shooting",
+    [6] = "Shooting from cover",
+    [7] = {"Gangsta",isPistolOnly = true},
+    [8] = {"One-handed",isPistolOnly = true},
+	[9] = "Somalian",
+}
+
 if CLIENT then
 	local printed
 
+<<<<<<< HEAD
     hg.postures = {
         [0] = "Regular hold",
         [1] = "Hipfire",
@@ -73,6 +87,8 @@ if CLIENT then
         [8] = "One-handed",
     }
 
+=======
+>>>>>>> e552a484e04a3abf117d18149ec1e78c46889cee
 	concommand.Add("hg_change_posture", function(ply, cmd, args)
 		if not args[1] and not isnumber(args[1]) and not printed then print([[Change your gun posture:
 0 - regular hold
@@ -114,7 +130,7 @@ else
 			end
 		else
 			ply.posture = ply.posture or 0
-			ply.posture = (ply.posture + 1) >= 9 and 0 or ply.posture + 1
+			ply.posture = (ply.posture + 1) > #hg.postures and 0 or ply.posture + 1
 		end
 		net.Start("change_posture")
 		net.WriteEntity(ply)
@@ -177,12 +193,15 @@ if CLIENT then
                         local tbl2 = {}
 
                         for i, str in pairs(hg.postures) do -- DO. NOT. CHANGE. TO. IPAIRS. kthxbye
+							if istable(str) then
+								if str.isPistolOnly and !wep:IsPistolHoldType() then continue end
+							end
                             tbl2[#tbl2 + 1] = {
                                 [1] = function()
                                     RunConsoleCommand("hg_change_posture", i)
 
                                 end,
-                                [2] = str
+                                [2] = istable(str) and str[1] or str
                             }
                         end
 

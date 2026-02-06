@@ -184,4 +184,25 @@ function CLASS.PlayerDraw(self)
             render.DrawBeam(tr.StartPos - vector_up * 2,pos,2,0,10,collick)
         end
     end
+<<<<<<< HEAD
+=======
+end
+
+if SERVER then
+	local slugy_phrases = {
+		"zcity/voice/slugcat_1/waw_1.mp3",
+		"zcity/voice/slugcat_1/waw_2.mp3",
+		"zcity/voice/slugcat_1/waw_3.mp3",
+		"zcity/voice/slugcat_1/waw_4.mp3"
+	}
+
+	hook.Add("HG_ReplacePhrase", "ScugPhrases", function(ent, phrase, muffed, pitch)
+		if IsValid(ent) then
+			local wawer = string.match(ent:GetModel(), "scug")
+			if wawer then
+				return ent, slugy_phrases[math.random(#slugy_phrases)], muffed, pitch
+			end
+		end
+	end)
+>>>>>>> e552a484e04a3abf117d18149ec1e78c46889cee
 end

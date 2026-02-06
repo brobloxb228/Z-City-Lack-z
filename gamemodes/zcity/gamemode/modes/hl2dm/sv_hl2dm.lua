@@ -21,12 +21,16 @@ util.AddNetworkString("hl2dm_start")
 function MODE:Intermission()
 	game.CleanUpMap()
 
+<<<<<<< HEAD
 	self.CTPoints = {}
 	self.TPoints = {}
 	table.CopyFromTo( zb.GetMapPoints( "HMCD_TDM_T" ), self.TPoints)
 	table.CopyFromTo( zb.GetMapPoints( "HMCD_TDM_CT" ), self.CTPoints)
 
 	for i, ply in ipairs(player.GetAll()) do
+=======
+	for i, ply in player.Iterator() do
+>>>>>>> e552a484e04a3abf117d18149ec1e78c46889cee
 		ply:SetupTeam(ply:Team())
 	end
 
@@ -170,12 +174,13 @@ function MODE:PlayerDeath(ply)
 end
 
 function MODE:CanLaunch()
-    local TPoints = zb.GetMapPoints("HMCD_TDM_T")
+	return true
+    --[[local TPoints = zb.GetMapPoints("HMCD_TDM_T")
     local CTPoints = zb.GetMapPoints("HMCD_TDM_CT")
     if TPoints and #TPoints > 0 and CTPoints and #CTPoints > 0 then
         return true
     end
-    return false
+    return false]]
 end
 
 util.AddNetworkString("ZB_RequestAirStrike")

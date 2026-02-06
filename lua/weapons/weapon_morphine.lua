@@ -65,9 +65,13 @@ if SERVER then
 		local owner = self:GetOwner()
 		local entOwner = IsValid(owner.FakeRagdoll) and owner.FakeRagdoll or owner
 
-		local injected = math.min(FrameTime() * 10, self.modeValues[1])
+		local injected = math.min(FrameTime() * 1, self.modeValues[1])
 		org.analgesiaAdd = math.min(org.analgesiaAdd + injected, 4)
+<<<<<<< HEAD
 		self.modeValues[1] = math.max(self.modeValues[1] - FrameTime() * 10, 0)
+=======
+		self.modeValues[1] = math.max(self.modeValues[1] - injected, 0)
+>>>>>>> e552a484e04a3abf117d18149ec1e78c46889cee
 
 		owner.injectedinto = owner.injectedinto or {}
 		owner.injectedinto[org.owner] = owner.injectedinto[org.owner] or 0

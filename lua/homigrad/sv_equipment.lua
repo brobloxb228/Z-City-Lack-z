@@ -264,7 +264,7 @@ local function protec(org, bone, dmg, dmgInfo, placement, armor, scale, scalepro
 	dmgInfo:SetDamageType(DMG_CLUB)
 	dmgInfo:SetDamageForce(dmgInfo:GetDamageForce() * 0.4)
 	dmgInfo:ScaleDamage(0.2)
-	
+
 	return 0.9
 end
 
@@ -519,4 +519,14 @@ hg.organism.input_list.protovisor = function(org, bone, dmg, dmgInfo, ...)
 	end
 	//dmgInfo:GetAttacker():ChatPrint(tostring(org.owner.armors_health["protovisor"]))
 	return protect
+<<<<<<< HEAD
 end
+=======
+end
+
+hook.Add("HG_ReplacePhrase", "MaskMuffed", function(ent, phrase, muffed, pitch)
+	if IsValid(ent) and ent.armors and ent.armors["face"] == "mask2" then
+		return ent, phrase, true, pitch
+	end
+end)
+>>>>>>> e552a484e04a3abf117d18149ec1e78c46889cee

@@ -2048,6 +2048,15 @@ local IsValid = IsValid
 		if self.ReloadSound then util.PrecacheSound(self.ReloadSound) end
 	end
 --//
+--\\ Faster npcs (does not works)
+	--[[hook.Add("OnEntityCreated", "fasternpcs", function(ent)
+		if IsValid(ent) and ent:IsNPC() then
+			timer.Simple(.1, function()
+				ent:SetPlaybackRate(2)
+			end)
+		end
+	end)]]--
+--//
 --\\ timescale pitch change
 	local cheats = GetConVar( "sv_cheats" )
 	local timeScale = GetConVar( "host_timescale" )
@@ -2104,10 +2113,20 @@ local IsValid = IsValid
 		end
 
 		if not flashlightwep then --custom flashlight
+			if IsValid(wep) and (wep.IsPistolHoldType and not wep:IsPistolHoldType() and ply.PlayerClassName ~= "Gordon") then return end
+
 			local inv = ply:GetNetVar("Inventory",{})
+<<<<<<< HEAD
 			if inv and inv["Weapons"] and inv["Weapons"]["hg_flashlight"] and enabled then
 				hg.GetCurrentCharacter(ply):EmitSound("items/flashlight1.wav",65)
 				ply:SetNetVar("flashlight",not ply:GetNetVar("flashlight"))
+=======
+			if inv and inv["Weapons"] and inv["Weapons"]["hg_flashlight"] and enabled and hg.CanUseLeftHand(ply) then
+				local flashvar = ply:GetNetVar("flashlight")
+
+				hg.GetCurrentCharacter(ply):EmitSound("items/flashlight1.wav", 65, flashvar and 110 or 130)
+				ply:SetNetVar("flashlight",not flashvar)
+>>>>>>> e552a484e04a3abf117d18149ec1e78c46889cee
 				--return true
 				if IsValid(ply.flashlight) then ply.flashlight:Remove() end
 			else
@@ -2295,7 +2314,7 @@ local IsValid = IsValid
 		["lunasflightschool_ah6"] = {multi = 20, AmmoType = "14.5x114mm BZTM"},
 		["npc_turret_floor"] = {multi = 1.25, AmmoType = "9x19 mm Parabellum"},
 		["npc_sniper"] = {multi = 3, AmmoType = "14.5x114mm BZTM", PenetrationMul = 4},
-		["npc_hunter"] = {multi = 4, AmmoType = "12/70 RIP", PenetrationMul = 1}, --;; не работает(
+		["npc_hunter"] = {multi = 4, AmmoType = "12/70 RIP", PenetrationMul = 1}, --;; не работает( потому что прожектайлами стреляет
 		["npc_turret_ceiling"] = {multi = 1.25, AmmoType = "9x19 mm QuakeMaker"},
 	}
 
@@ -2600,8 +2619,9 @@ duplicator.Allow( "homigrad_base" )
 	end)
 --//
 
---\\ Shared coldmaps
-hg.ColdMaps = {
+
+--\\ Shared maps with temperatures
+hg.TemperatureMaps = {
 	["gm_wintertown"] = true,
 	["cs_drugbust_winter"] = true,
 	["cs_office"] = true,
@@ -2615,7 +2635,8 @@ hg.ColdMaps = {
 	["mu_riverside_snow"] = true,
 	["gm_fork_north"] = true,
 	["gm_fork_north_day"] = true,
-	["gm_ijm_boreas"] = true
+	["gm_ijm_boreas"] = true,
+	["gm_construct"] = true, -- test
 }
 --//
 
