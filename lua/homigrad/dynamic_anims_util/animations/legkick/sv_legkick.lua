@@ -142,11 +142,11 @@ function PLAYER:LegAttack()
 
                     PenetrationGlobal = 1
 					MaxPenLenGlobal = 1
-                    hg.AddForceRag(ent, tr.PhysicsBone or 0, normal * dmg * 1000, 0.25)
+                    hg.AddForceRag(ent, tr.PhysicsBone or 0, normal * dmg * 4000, 0.25)
                     ent:TakeDamageInfo(dmginfo)
                     
                     if IsValid(phys) then
-                        phys:ApplyForceOffset(normal * dmg * 200, tr.HitPos)
+                        phys:ApplyForceOffset(normal * dmg * 1200, tr.HitPos)
                     end
 
 					if ent:IsPlayer() or ent:GetClass() == "prop_ragdoll" then
@@ -160,7 +160,7 @@ function PLAYER:LegAttack()
                             end)
                         end
 
-                        ent:SetVelocity(normal * 150)
+                        ent:SetVelocity(normal * 1200)
                     end
                     if hgIsDoor(ent) and !ent:GetNoDraw() then
                         ent.HP = ent.HP or 200

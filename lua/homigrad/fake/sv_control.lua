@@ -616,9 +616,19 @@ hook.Add("Think", "Fake", function()
 				if IsValid(ragdoll.ConsLH) then
 					local ent = ragdoll.ConsLH.Ent2
 					if IsValid(ent) and not ent:IsWorld() then
-						local phys = ent:GetPhysicsObjectNum(ragdoll.ConsLH.Bone2)
-						if IsValid(phys) then
-							phys:ApplyForceCenter(ply:EyeAngles():Forward() * phys:GetMass() * 1200)
+						local vec = ply:EyeAngles():Forward() * 2500
+						if ent:IsRagdoll() then
+							for i = 0, ent:GetPhysicsObjectCount() - 1 do
+								local phys = ent:GetPhysicsObjectNum(i)
+								if IsValid(phys) then
+									phys:SetVelocity(phys:GetVelocity() + vec)
+								end
+							end
+						else
+							local phys = ent:GetPhysicsObject()
+							if IsValid(phys) then
+								phys:SetVelocity(phys:GetVelocity() + vec)
+							end
 						end
 					end
 
@@ -691,9 +701,19 @@ hook.Add("Think", "Fake", function()
 				if IsValid(ragdoll.ConsRH) then
 					local ent = ragdoll.ConsRH.Ent2
 					if IsValid(ent) and not ent:IsWorld() then
-						local phys = ent:GetPhysicsObjectNum(ragdoll.ConsRH.Bone2)
-						if IsValid(phys) then
-							phys:ApplyForceCenter(ply:EyeAngles():Forward() * phys:GetMass() * 1200)
+						local vec = ply:EyeAngles():Forward() * 2500
+						if ent:IsRagdoll() then
+							for i = 0, ent:GetPhysicsObjectCount() - 1 do
+								local phys = ent:GetPhysicsObjectNum(i)
+								if IsValid(phys) then
+									phys:SetVelocity(phys:GetVelocity() + vec)
+								end
+							end
+						else
+							local phys = ent:GetPhysicsObject()
+							if IsValid(phys) then
+								phys:SetVelocity(phys:GetVelocity() + vec)
+							end
 						end
 					end
 
