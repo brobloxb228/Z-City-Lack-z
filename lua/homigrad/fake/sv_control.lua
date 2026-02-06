@@ -614,6 +614,14 @@ hook.Add("Think", "Fake", function()
 				end
 			else
 				if IsValid(ragdoll.ConsLH) then
+					local ent = ragdoll.ConsLH.Ent2
+					if IsValid(ent) and not ent:IsWorld() then
+						local phys = ent:GetPhysicsObjectNum(ragdoll.ConsLH.Bone2)
+						if IsValid(phys) then
+							phys:ApplyForceCenter(ply:EyeAngles():Forward() * phys:GetMass() * 1200)
+						end
+					end
+
 					ragdoll.ConsLH:Remove()
 					ragdoll.ConsLH = nil
 					for i = 1, 4 do
@@ -681,6 +689,14 @@ hook.Add("Think", "Fake", function()
 				end
 			else
 				if IsValid(ragdoll.ConsRH) then
+					local ent = ragdoll.ConsRH.Ent2
+					if IsValid(ent) and not ent:IsWorld() then
+						local phys = ent:GetPhysicsObjectNum(ragdoll.ConsRH.Bone2)
+						if IsValid(phys) then
+							phys:ApplyForceCenter(ply:EyeAngles():Forward() * phys:GetMass() * 1200)
+						end
+					end
+
 					ragdoll.ConsRH:Remove()
 					ragdoll.ConsRH = nil
 					for i = 1, 4 do
